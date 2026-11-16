@@ -128,7 +128,12 @@ fun App(
                 NavigationBar(title = "Home", largeTitle = true)
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     // 顺序对齐 miuix MainPage
-                    oinkSection(onOpen = { showOink = true }, dark = dark, accent = themeState.accent)
+                    oinkSection(
+                        onOpen = { showOink = true },
+                        dark = dark,
+                        accent = themeState.accent,
+                        oinkTheme = themeState.style == AppThemeStyle.Oink,
+                    )
                     searchBarSection()
                     liquidGlassSection()
                     basicComponentSection()

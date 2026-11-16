@@ -18,6 +18,7 @@ fun LazyListScope.searchBarSection() {
         SearchBar(
             value = search,
             onValueChange = { search = it },
+            cancelLabel = "Cancel",
             modifier = Modifier
                 .padding(horizontal = 12.dp)
                 .padding(bottom = 12.dp),

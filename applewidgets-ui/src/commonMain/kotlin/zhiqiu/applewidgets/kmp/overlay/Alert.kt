@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.overlay
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,6 +40,11 @@ fun Alert(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val impl = LocalAlertImpl.current
+    if (impl != null) {
+        impl(AlertParams(title, message, actions, onDismissRequest, modifier))
+        return
+    }
     val colors = AppleWidgetsTheme.colorScheme
     Box(
         modifier = Modifier
@@ -105,3 +112,16 @@ fun Alert(
         }
     }
 }
+
+/** 弹窗实现覆盖参数。 */
+@Immutable
+data class AlertParams(
+    val title: String,
+    val message: String?,
+    val actions: List<AlertAction>,
+    val onDismissRequest: () -> Unit,
+    val modifier: Modifier,
+)
+
+/** 主题可替换的弹窗实现；null 表示使用组件库默认实现。 */
+val LocalAlertImpl = compositionLocalOf<(@Composable (AlertParams) -> Unit)?> { null }

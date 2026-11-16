@@ -29,6 +29,13 @@ import zhiqiu.applewidgets.kmp.basic.SliderParams
 import zhiqiu.applewidgets.kmp.basic.StepperParams
 import zhiqiu.applewidgets.kmp.basic.SwitchParams
 import zhiqiu.applewidgets.kmp.basic.TabRowParams
+import zhiqiu.applewidgets.kmp.basic.ToastParams
+import zhiqiu.applewidgets.kmp.basic.LocalToastImpl
+import zhiqiu.applewidgets.kmp.overlay.AlertActionRole
+import zhiqiu.applewidgets.kmp.overlay.AlertParams
+import zhiqiu.applewidgets.kmp.overlay.LocalAlertImpl
+import zhiqiu.applewidgets.kmp.oink.overlay.OinkDialog
+import zhiqiu.applewidgets.kmp.oink.overlay.OinkToast
 import zhiqiu.applewidgets.kmp.basic.TextFieldParams
 import zhiqiu.applewidgets.kmp.oink.basic.OinkBadge
 import zhiqiu.applewidgets.kmp.oink.basic.OinkCard
@@ -79,6 +86,8 @@ internal fun ProvideOinkComponents(content: @Composable () -> Unit) {
         LocalStepperImpl provides { params -> OinkStepperImpl(params) },
         LocalColorPickerImpl provides { params -> OinkColorPickerImpl(params) },
         LocalLinearProgressViewImpl provides { params -> OinkLinearProgressViewImpl(params) },
+        LocalToastImpl provides { params -> OinkToastImpl(params) },
+        LocalAlertImpl provides { params -> OinkDialogImpl(params) },
     ) {
         content()
     }
@@ -256,5 +265,31 @@ internal fun OinkLinearProgressViewImpl(params: LinearProgressViewParams) {
     OinkProgress(
         modifier = params.modifier,
         progress = params.progress,
+    )
+}
+
+@Composable
+internal fun OinkToastImpl(params: ToastParams) {
+    if (!params.visible) return
+    OinkToast(
+        message = params.message,
+        modifier = params.modifier,
+    )
+}
+
+@Composable
+internal fun OinkDialogImpl(params: AlertParams) {
+    val confirm = params.actions.firstOrNull { it.role != AlertActionRole.Cancel }
+    val dismiss = params.actions.firstOrNull { it.role == AlertActionRole.Cancel }
+    OinkDialog(
+        onDismissRequest = params.onDismissRequest,
+        title = params.title,
+        text = params.message,
+        modifier = params.modifier,
+        destructive = confirm?.role == AlertActionRole.Destructive,
+        confirmLabel = confirm?.title ?: "Confirm",
+        onConfirm = confirm?.onClick,
+        dismissLabel = dismiss?.title ?: "Cancel",
+        onDismiss = dismiss?.onClick,
     )
 }

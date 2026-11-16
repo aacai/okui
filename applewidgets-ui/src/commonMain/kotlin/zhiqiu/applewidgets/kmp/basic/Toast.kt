@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,6 +34,11 @@ fun Toast(
     visible: Boolean = true,
     colors: ToastColors = ToastDefaults.colors(),
 ) {
+    val impl = LocalToastImpl.current
+    if (impl != null) {
+        impl(ToastParams(message, modifier, visible, colors))
+        return
+    }
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn() + slideInVertically { it / 2 },
@@ -112,3 +118,15 @@ data class ToastColors(
     val containerColor: Color,
     val contentColor: Color,
 )
+
+/** 轻提示实现覆盖参数。 */
+@Immutable
+data class ToastParams(
+    val message: String,
+    val modifier: Modifier,
+    val visible: Boolean,
+    val colors: ToastColors,
+)
+
+/** 主题可替换的轻提示实现；null 表示使用组件库默认实现。 */
+val LocalToastImpl = compositionLocalOf<(@Composable (ToastParams) -> Unit)?> { null }

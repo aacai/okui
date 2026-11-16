@@ -2,23 +2,39 @@ package zhiqiu.applewidgets.kmp.oink.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import zhiqiu.applewidgets.kmp.basic.BadgeParams
+import zhiqiu.applewidgets.kmp.basic.CardParams
 import zhiqiu.applewidgets.kmp.basic.CheckboxParams
+import zhiqiu.applewidgets.kmp.basic.LocalBadgeImpl
+import zhiqiu.applewidgets.kmp.basic.LocalCardImpl
 import zhiqiu.applewidgets.kmp.basic.LocalCheckboxImpl
+import zhiqiu.applewidgets.kmp.basic.LocalProgressViewImpl
+import zhiqiu.applewidgets.kmp.basic.LocalSegmentedControlImpl
+import zhiqiu.applewidgets.kmp.basic.LocalTabRowImpl
 import zhiqiu.applewidgets.kmp.basic.LocalRadioButtonImpl
 import zhiqiu.applewidgets.kmp.basic.LocalSearchBarImpl
 import zhiqiu.applewidgets.kmp.basic.LocalSliderImpl
 import zhiqiu.applewidgets.kmp.basic.LocalSwitchImpl
 import zhiqiu.applewidgets.kmp.basic.LocalTextFieldImpl
+import zhiqiu.applewidgets.kmp.basic.ProgressViewParams
 import zhiqiu.applewidgets.kmp.basic.RadioButtonParams
+import zhiqiu.applewidgets.kmp.basic.SegmentedControlParams
 import zhiqiu.applewidgets.kmp.basic.SearchBarParams
 import zhiqiu.applewidgets.kmp.basic.SliderParams
 import zhiqiu.applewidgets.kmp.basic.SwitchParams
+import zhiqiu.applewidgets.kmp.basic.TabRowParams
 import zhiqiu.applewidgets.kmp.basic.TextFieldParams
+import zhiqiu.applewidgets.kmp.oink.basic.OinkBadge
+import zhiqiu.applewidgets.kmp.oink.basic.OinkCard
 import zhiqiu.applewidgets.kmp.oink.basic.OinkCheckbox
 import zhiqiu.applewidgets.kmp.oink.basic.OinkRadio
+import zhiqiu.applewidgets.kmp.oink.basic.OinkSegmented
 import zhiqiu.applewidgets.kmp.oink.basic.OinkSlider
+import zhiqiu.applewidgets.kmp.oink.basic.OinkSpinner
 import zhiqiu.applewidgets.kmp.oink.basic.OinkSwitch
+import zhiqiu.applewidgets.kmp.oink.basic.OinkTabs
 import zhiqiu.applewidgets.kmp.oink.form.OinkSearchInput
+import androidx.compose.foundation.layout.ColumnScope
 import zhiqiu.applewidgets.kmp.oink.form.OinkTextField
 
 /**
@@ -37,6 +53,11 @@ internal fun ProvideOinkComponents(content: @Composable () -> Unit) {
         LocalSliderImpl provides { params -> OinkSliderImpl(params) },
         LocalTextFieldImpl provides { params -> OinkTextFieldImpl(params) },
         LocalSearchBarImpl provides { params -> OinkSearchBarImpl(params) },
+        LocalCardImpl provides { params, content -> OinkCardImpl(params, content) },
+        LocalBadgeImpl provides { params -> OinkBadgeImpl(params) },
+        LocalSegmentedControlImpl provides { params -> OinkSegmentedImpl(params) },
+        LocalTabRowImpl provides { params -> OinkTabsImpl(params) },
+        LocalProgressViewImpl provides { params -> OinkSpinnerImpl(params) },
     ) {
         content()
     }
@@ -107,5 +128,51 @@ internal fun OinkSearchBarImpl(params: SearchBarParams) {
         modifier = params.modifier,
         enabled = params.enabled,
         placeholder = params.placeholder,
+    )
+}
+
+@Composable
+internal fun OinkCardImpl(
+    params: CardParams,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    OinkCard(modifier = params.modifier, content = content)
+}
+
+@Composable
+internal fun OinkBadgeImpl(params: BadgeParams) {
+    val count = params.count
+    OinkBadge(
+        text = count?.let { if (it > 99) "99+" else it.toString() } ?: "",
+        modifier = params.modifier,
+        dot = count == null,
+    )
+}
+
+@Composable
+internal fun OinkSegmentedImpl(params: SegmentedControlParams) {
+    OinkSegmented(
+        options = params.options,
+        selectedIndex = params.selectedIndex,
+        onSelectedChange = params.onSelect,
+        modifier = params.modifier,
+    )
+}
+
+@Composable
+internal fun OinkTabsImpl(params: TabRowParams) {
+    OinkTabs(
+        tabs = params.tabs,
+        selectedIndex = params.selectedIndex,
+        onSelectedChange = params.onSelect,
+        modifier = params.modifier,
+    )
+}
+
+@Composable
+internal fun OinkSpinnerImpl(params: ProgressViewParams) {
+    OinkSpinner(
+        modifier = params.modifier,
+        size = params.size,
     )
 }

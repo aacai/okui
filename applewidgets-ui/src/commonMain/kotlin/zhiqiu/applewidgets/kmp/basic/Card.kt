@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -22,6 +23,11 @@ fun Card(
     shape: Shape? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val impl = LocalCardImpl.current
+    if (impl != null) {
+        impl(CardParams(modifier, colors, shape), content)
+        return
+    }
     val cardShape = shape ?: AppleWidgetsTheme.componentStyles.cardShape
     Column(
         modifier = modifier
@@ -43,3 +49,14 @@ object CardDefaults {
 data class CardColors(
     val containerColor: Color,
 )
+
+/** 卡片实现覆盖参数。 */
+@Immutable
+data class CardParams(
+    val modifier: Modifier,
+    val colors: CardColors,
+    val shape: Shape?,
+)
+
+/** 主题可替换的卡片实现；null 表示使用组件库默认实现。 */
+val LocalCardImpl = compositionLocalOf<(@Composable (CardParams, @Composable ColumnScope.() -> Unit) -> Unit)?> { null }

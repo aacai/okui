@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,11 @@ fun TabRow(
     modifier: Modifier = Modifier,
     colors: TabRowColors = TabRowDefaults.colors(),
 ) {
+    val impl = LocalTabRowImpl.current
+    if (impl != null) {
+        impl(TabRowParams(tabs, selectedIndex, onSelect, modifier, colors))
+        return
+    }
     Column(modifier = modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth()) {
             tabs.forEachIndexed { index, title ->
@@ -81,3 +87,16 @@ data class TabRowColors(
     val indicatorColor: Color,
     val dividerColor: Color,
 )
+
+/** 标签栏实现覆盖参数。 */
+@Immutable
+data class TabRowParams(
+    val tabs: List<String>,
+    val selectedIndex: Int,
+    val onSelect: (Int) -> Unit,
+    val modifier: Modifier,
+    val colors: TabRowColors,
+)
+
+/** 主题可替换的标签栏实现；null 表示使用组件库默认实现。 */
+val LocalTabRowImpl = compositionLocalOf<(@Composable (TabRowParams) -> Unit)?> { null }

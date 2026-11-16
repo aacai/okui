@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -33,6 +35,11 @@ fun SegmentedControl(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val impl = LocalSegmentedControlImpl.current
+    if (impl != null) {
+        impl(SegmentedControlParams(options, selectedIndex, onSelect, modifier))
+        return
+    }
     require(options.isNotEmpty())
     val colors = AppleWidgetsTheme.colorScheme
     BoxWithConstraints(
@@ -84,3 +91,15 @@ fun SegmentedControl(
         }
     }
 }
+
+/** 分段控件实现覆盖参数。 */
+@Immutable
+data class SegmentedControlParams(
+    val options: List<String>,
+    val selectedIndex: Int,
+    val onSelect: (Int) -> Unit,
+    val modifier: Modifier,
+)
+
+/** 主题可替换的分段控件实现；null 表示使用组件库默认实现。 */
+val LocalSegmentedControlImpl = compositionLocalOf<(@Composable (SegmentedControlParams) -> Unit)?> { null }

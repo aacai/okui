@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -26,6 +28,11 @@ fun ProgressView(
     size: Dp = 28.dp,
     strokeWidth: Dp = 3.dp,
 ) {
+    val impl = LocalProgressViewImpl.current
+    if (impl != null) {
+        impl(ProgressViewParams(modifier, size, strokeWidth))
+        return
+    }
     val color = AppleWidgetsTheme.colorScheme.secondaryLabel
     val transition = rememberInfiniteTransition(label = "progress")
     val rotation by transition.animateFloat(
@@ -67,3 +74,14 @@ fun LinearProgressView(
         )
     }
 }
+
+/** 环形进度实现覆盖参数。 */
+@Immutable
+data class ProgressViewParams(
+    val modifier: Modifier,
+    val size: Dp,
+    val strokeWidth: Dp,
+)
+
+/** 主题可替换的环形进度实现；null 表示使用组件库默认实现。 */
+val LocalProgressViewImpl = compositionLocalOf<(@Composable (ProgressViewParams) -> Unit)?> { null }

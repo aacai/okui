@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
@@ -19,6 +21,11 @@ fun Badge(
     modifier: Modifier = Modifier,
     color: Color = AppleWidgetsTheme.colorScheme.destructive,
 ) {
+    val impl = LocalBadgeImpl.current
+    if (impl != null) {
+        impl(BadgeParams(count, modifier, color))
+        return
+    }
     val label = when {
         count == null -> null
         count > 99 -> "99+"
@@ -41,3 +48,14 @@ fun Badge(
         }
     }
 }
+
+/** 角标实现覆盖参数。 */
+@Immutable
+data class BadgeParams(
+    val count: Int?,
+    val modifier: Modifier,
+    val color: Color,
+)
+
+/** 主题可替换的角标实现；null 表示使用组件库默认实现。 */
+val LocalBadgeImpl = compositionLocalOf<(@Composable (BadgeParams) -> Unit)?> { null }

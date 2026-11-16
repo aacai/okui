@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +31,11 @@ fun ColorPicker(
     onColorChange: (Color) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val impl = LocalColorPickerImpl.current
+    if (impl != null) {
+        impl(ColorPickerParams(color, onColorChange, modifier))
+        return
+    }
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Box(
@@ -102,3 +109,14 @@ private fun Color.toHex(): String {
     fun ch(v: Float) = ((v * 255).toInt() and 0xFF).toString(16).padStart(2, '0')
     return (ch(red) + ch(green) + ch(blue)).uppercase()
 }
+
+/** 取色器实现覆盖参数。 */
+@Immutable
+data class ColorPickerParams(
+    val color: Color,
+    val onColorChange: (Color) -> Unit,
+    val modifier: Modifier,
+)
+
+/** 主题可替换的取色器实现；null 表示使用组件库默认实现。 */
+val LocalColorPickerImpl = compositionLocalOf<(@Composable (ColorPickerParams) -> Unit)?> { null }

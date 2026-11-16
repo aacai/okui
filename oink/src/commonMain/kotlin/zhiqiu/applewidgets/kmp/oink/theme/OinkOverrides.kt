@@ -5,11 +5,15 @@ import androidx.compose.runtime.CompositionLocalProvider
 import zhiqiu.applewidgets.kmp.basic.BadgeParams
 import zhiqiu.applewidgets.kmp.basic.CardParams
 import zhiqiu.applewidgets.kmp.basic.CheckboxParams
+import zhiqiu.applewidgets.kmp.basic.ColorPickerParams
 import zhiqiu.applewidgets.kmp.basic.LocalBadgeImpl
 import zhiqiu.applewidgets.kmp.basic.LocalCardImpl
 import zhiqiu.applewidgets.kmp.basic.LocalCheckboxImpl
+import zhiqiu.applewidgets.kmp.basic.LocalColorPickerImpl
+import zhiqiu.applewidgets.kmp.basic.LocalLinearProgressViewImpl
 import zhiqiu.applewidgets.kmp.basic.LocalProgressViewImpl
 import zhiqiu.applewidgets.kmp.basic.LocalSegmentedControlImpl
+import zhiqiu.applewidgets.kmp.basic.LocalStepperImpl
 import zhiqiu.applewidgets.kmp.basic.LocalTabRowImpl
 import zhiqiu.applewidgets.kmp.basic.LocalRadioButtonImpl
 import zhiqiu.applewidgets.kmp.basic.LocalSearchBarImpl
@@ -20,7 +24,9 @@ import zhiqiu.applewidgets.kmp.basic.ProgressViewParams
 import zhiqiu.applewidgets.kmp.basic.RadioButtonParams
 import zhiqiu.applewidgets.kmp.basic.SegmentedControlParams
 import zhiqiu.applewidgets.kmp.basic.SearchBarParams
+import zhiqiu.applewidgets.kmp.basic.LinearProgressViewParams
 import zhiqiu.applewidgets.kmp.basic.SliderParams
+import zhiqiu.applewidgets.kmp.basic.StepperParams
 import zhiqiu.applewidgets.kmp.basic.SwitchParams
 import zhiqiu.applewidgets.kmp.basic.TabRowParams
 import zhiqiu.applewidgets.kmp.basic.TextFieldParams
@@ -28,14 +34,24 @@ import zhiqiu.applewidgets.kmp.oink.basic.OinkBadge
 import zhiqiu.applewidgets.kmp.oink.basic.OinkCard
 import zhiqiu.applewidgets.kmp.oink.basic.OinkCheckbox
 import zhiqiu.applewidgets.kmp.oink.basic.OinkRadio
+import zhiqiu.applewidgets.kmp.oink.basic.OinkProgress
+import zhiqiu.applewidgets.kmp.oink.form.OinkStepper
 import zhiqiu.applewidgets.kmp.oink.basic.OinkSegmented
 import zhiqiu.applewidgets.kmp.oink.basic.OinkSlider
 import zhiqiu.applewidgets.kmp.oink.basic.OinkSpinner
 import zhiqiu.applewidgets.kmp.oink.basic.OinkSwitch
 import zhiqiu.applewidgets.kmp.oink.basic.OinkTabs
+import zhiqiu.applewidgets.kmp.oink.form.OinkColorPicker
 import zhiqiu.applewidgets.kmp.oink.form.OinkSearchInput
 import androidx.compose.foundation.layout.ColumnScope
 import zhiqiu.applewidgets.kmp.oink.form.OinkTextField
+import zhiqiu.applewidgets.kmp.overlay.DropdownMenuParams
+import zhiqiu.applewidgets.kmp.overlay.LocalDropdownMenuImpl
+import zhiqiu.applewidgets.kmp.overlay.LocalSheetImpl
+import zhiqiu.applewidgets.kmp.overlay.SheetParams
+import zhiqiu.applewidgets.kmp.oink.overlay.OinkMenu
+import zhiqiu.applewidgets.kmp.oink.overlay.OinkMenuItem
+import zhiqiu.applewidgets.kmp.oink.overlay.OinkSheet
 
 /**
  * Oink 皮肤对 applewidgets-ui 组件的实现覆盖。
@@ -58,6 +74,11 @@ internal fun ProvideOinkComponents(content: @Composable () -> Unit) {
         LocalSegmentedControlImpl provides { params -> OinkSegmentedImpl(params) },
         LocalTabRowImpl provides { params -> OinkTabsImpl(params) },
         LocalProgressViewImpl provides { params -> OinkSpinnerImpl(params) },
+        LocalDropdownMenuImpl provides { params -> OinkDropdownMenuImpl(params) },
+        LocalSheetImpl provides { params, content -> OinkSheetImpl(params, content) },
+        LocalStepperImpl provides { params -> OinkStepperImpl(params) },
+        LocalColorPickerImpl provides { params -> OinkColorPickerImpl(params) },
+        LocalLinearProgressViewImpl provides { params -> OinkLinearProgressViewImpl(params) },
     ) {
         content()
     }
@@ -174,5 +195,66 @@ internal fun OinkSpinnerImpl(params: ProgressViewParams) {
     OinkSpinner(
         modifier = params.modifier,
         size = params.size,
+    )
+}
+
+@Composable
+internal fun OinkDropdownMenuImpl(params: DropdownMenuParams) {
+    OinkMenu(
+        expanded = params.expanded,
+        onDismissRequest = params.onDismissRequest,
+        modifier = params.modifier,
+    ) {
+        for (item in params.items) {
+            OinkMenuItem(
+                text = item.title,
+                onClick = item.onClick,
+                enabled = item.enabled,
+                trailing = item.trailing,
+                selected = item.checked,
+                destructive = item.destructive,
+            )
+        }
+    }
+}
+
+@Composable
+internal fun OinkSheetImpl(
+    params: SheetParams,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    OinkSheet(
+        open = true,
+        onDismissRequest = params.onDismissRequest,
+        modifier = params.modifier,
+        content = content,
+    )
+}
+
+@Composable
+internal fun OinkStepperImpl(params: StepperParams) {
+    OinkStepper(
+        value = params.value,
+        onValueChange = params.onValueChange,
+        modifier = params.modifier,
+        enabled = params.enabled,
+        range = params.valueRange,
+    )
+}
+
+@Composable
+internal fun OinkColorPickerImpl(params: ColorPickerParams) {
+    OinkColorPicker(
+        color = params.color,
+        onColorChange = params.onColorChange,
+        modifier = params.modifier,
+    )
+}
+
+@Composable
+internal fun OinkLinearProgressViewImpl(params: LinearProgressViewParams) {
+    OinkProgress(
+        modifier = params.modifier,
+        progress = params.progress,
     )
 }

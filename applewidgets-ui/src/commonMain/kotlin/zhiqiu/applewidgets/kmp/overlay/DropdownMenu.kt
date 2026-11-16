@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.overlay
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -111,6 +113,11 @@ fun DropdownMenu(
     items: List<DropdownMenuItem>,
     modifier: Modifier = Modifier,
 ) {
+    val impl = LocalDropdownMenuImpl.current
+    if (impl != null) {
+        impl(DropdownMenuParams(expanded, onDismissRequest, items, modifier))
+        return
+    }
     if (!expanded) return
     var submenu by remember(expanded) { mutableStateOf<DropdownMenuItem?>(null) }
 
@@ -243,3 +250,15 @@ fun CascadingDropdownMenu(
         modifier = modifier,
     )
 }
+
+/** 下拉菜单实现覆盖参数。 */
+@Immutable
+data class DropdownMenuParams(
+    val expanded: Boolean,
+    val onDismissRequest: () -> Unit,
+    val items: List<DropdownMenuItem>,
+    val modifier: Modifier,
+)
+
+/** 主题可替换的下拉菜单实现；null 表示使用组件库默认实现。 */
+val LocalDropdownMenuImpl = compositionLocalOf<(@Composable (DropdownMenuParams) -> Unit)?> { null }

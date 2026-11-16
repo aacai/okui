@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +36,11 @@ fun Stepper(
     showValue: Boolean = true,
     colors: StepperColors = StepperDefaults.colors(),
 ) {
+    val impl = LocalStepperImpl.current
+    if (impl != null) {
+        impl(StepperParams(value, onValueChange, modifier, valueRange, enabled, showValue))
+        return
+    }
     val canDec = enabled && value > valueRange.first
     val canInc = enabled && value < valueRange.last
     val shape = RoundedCornerShape(StepperDefaults.CornerRadius)
@@ -118,3 +124,17 @@ data class StepperColors(
     val disabledContentColor: Color,
     val borderColor: Color,
 )
+
+/** 步进器实现覆盖参数。 */
+@Immutable
+data class StepperParams(
+    val value: Int,
+    val onValueChange: (Int) -> Unit,
+    val modifier: Modifier,
+    val valueRange: IntRange,
+    val enabled: Boolean,
+    val showValue: Boolean,
+)
+
+/** 主题可替换的步进器实现；null 表示使用组件库默认实现。 */
+val LocalStepperImpl = compositionLocalOf<(@Composable (StepperParams) -> Unit)?> { null }

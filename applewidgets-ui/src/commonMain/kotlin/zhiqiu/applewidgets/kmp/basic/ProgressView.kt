@@ -62,6 +62,11 @@ fun LinearProgressView(
     progress: Float,
     modifier: Modifier = Modifier,
 ) {
+    val impl = LocalLinearProgressViewImpl.current
+    if (impl != null) {
+        impl(LinearProgressViewParams(progress, modifier))
+        return
+    }
     val colors = AppleWidgetsTheme.colorScheme
     Canvas(
         modifier = modifier.size(width = 200.dp, height = 4.dp),
@@ -85,3 +90,13 @@ data class ProgressViewParams(
 
 /** 主题可替换的环形进度实现；null 表示使用组件库默认实现。 */
 val LocalProgressViewImpl = compositionLocalOf<(@Composable (ProgressViewParams) -> Unit)?> { null }
+
+/** 线性进度实现覆盖参数。 */
+@Immutable
+data class LinearProgressViewParams(
+    val progress: Float,
+    val modifier: Modifier,
+)
+
+/** 主题可替换的线性进度实现；null 表示使用组件库默认实现。 */
+val LocalLinearProgressViewImpl = compositionLocalOf<(@Composable (LinearProgressViewParams) -> Unit)?> { null }

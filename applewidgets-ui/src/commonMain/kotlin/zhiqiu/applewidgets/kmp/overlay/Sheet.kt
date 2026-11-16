@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.overlay
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,11 @@ fun Sheet(
     detent: SheetDetent = SheetDetent.Medium,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val impl = LocalSheetImpl.current
+    if (impl != null) {
+        impl(SheetParams(onDismissRequest, modifier, detent), content)
+        return
+    }
     val colors = AppleWidgetsTheme.colorScheme
     val heightFraction = when (detent) {
         SheetDetent.Medium -> 0.5f
@@ -71,3 +78,14 @@ fun Sheet(
         }
     }
 }
+
+/** 底部弹层实现覆盖参数。 */
+@Immutable
+data class SheetParams(
+    val onDismissRequest: () -> Unit,
+    val modifier: Modifier,
+    val detent: SheetDetent,
+)
+
+/** 主题可替换的底部弹层实现；null 表示使用组件库默认实现。 */
+val LocalSheetImpl = compositionLocalOf<(@Composable (SheetParams, @Composable ColumnScope.() -> Unit) -> Unit)?> { null }

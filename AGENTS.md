@@ -90,6 +90,16 @@ OinkTheme                  ← 皮肤：包装 AppleWidgetsTheme，注入 Oink �
   通过 `AppleWidgetsTheme(colors, textStyles, styles)` 注入
 - Oink 专属视觉（超椭圆 `OinkShape`、`OinkMetrics`）留在 `oink/` 内部，不反向污染组件库
 
+## 组件实现覆盖（皮肤换实现）
+
+- 可被皮肤替换的组件提供两个东西：`XxxParams`（参数包）+ `LocalXxxImpl`（`compositionLocalOf` 槽）
+- 组件体第一件事：查槽 —— 有覆盖交给覆盖实现，没有走组件库默认实现
+- 皮肤在 `oink/theme/OinkOverrides.kt` 注入自己的实现（`ProvideOinkComponents`）
+- 效果：主页继续用 applewidgets-ui 的组件名，切到 Oink 主题即整体呈现 Oink 视觉，实现代码只有一份
+- 已覆盖组件：Switch / Checkbox / RadioButton / Slider / TextField / SearchBar / Card / Badge /
+  SegmentedControl / TabRow / ProgressView / LinearProgressView / DropdownMenu / Sheet / Stepper / ColorPicker
+- 新增可覆盖组件时同步更新两份清单（组件槽 + `OinkOverrides.kt`）
+
 ## 组件能力层（能力在组件库，皮肤只调色）
 
 - 组件的**能力**（变体 / 状态机 / 动效 / 交互）统一写在 `applewidgets-ui`，皮肤只提供令牌与配色

@@ -97,7 +97,8 @@ OinkTheme                  ← 皮肤：包装 AppleWidgetsTheme，注入 Oink �
 - 皮肤在 `oink/theme/OinkOverrides.kt` 注入自己的实现（`ProvideOinkComponents`）
 - 效果：主页继续用 applewidgets-ui 的组件名，切到 Oink 主题即整体呈现 Oink 视觉，实现代码只有一份
 - 已覆盖组件：Switch / Checkbox / RadioButton / Slider / TextField / SearchBar / Card / Badge /
-  SegmentedControl / TabRow / ProgressView / LinearProgressView / DropdownMenu / Sheet / Stepper / ColorPicker
+  SegmentedControl / TabRow / ProgressView / LinearProgressView / DropdownMenu / Sheet / Stepper /
+  ColorPicker / Toast / Alert / CalendarDatePicker
 - 新增可覆盖组件时同步更新两份清单（组件槽 + `OinkOverrides.kt`）
 
 ## 组件能力层（能力在组件库，皮肤只调色）

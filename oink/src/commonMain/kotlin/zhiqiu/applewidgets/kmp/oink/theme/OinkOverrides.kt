@@ -30,6 +30,10 @@ import zhiqiu.applewidgets.kmp.basic.StepperParams
 import zhiqiu.applewidgets.kmp.basic.SwitchParams
 import zhiqiu.applewidgets.kmp.basic.TabRowParams
 import zhiqiu.applewidgets.kmp.basic.ToastParams
+import zhiqiu.applewidgets.kmp.basic.CalendarDatePickerParams
+import zhiqiu.applewidgets.kmp.basic.DateComponents
+import zhiqiu.applewidgets.kmp.basic.LocalCalendarDatePickerImpl
+import zhiqiu.applewidgets.kmp.oink.form.OinkCalendar
 import zhiqiu.applewidgets.kmp.basic.LocalToastImpl
 import zhiqiu.applewidgets.kmp.overlay.AlertActionRole
 import zhiqiu.applewidgets.kmp.overlay.AlertParams
@@ -88,6 +92,7 @@ internal fun ProvideOinkComponents(content: @Composable () -> Unit) {
         LocalLinearProgressViewImpl provides { params -> OinkLinearProgressViewImpl(params) },
         LocalToastImpl provides { params -> OinkToastImpl(params) },
         LocalAlertImpl provides { params -> OinkDialogImpl(params) },
+        LocalCalendarDatePickerImpl provides { params -> OinkCalendarImpl(params) },
     ) {
         content()
     }
@@ -291,5 +296,16 @@ internal fun OinkDialogImpl(params: AlertParams) {
         onConfirm = confirm?.onClick,
         dismissLabel = dismiss?.title ?: "Cancel",
         onDismiss = dismiss?.onClick,
+    )
+}
+
+@Composable
+internal fun OinkCalendarImpl(params: CalendarDatePickerParams) {
+    OinkCalendar(
+        year = params.value.year,
+        month = params.value.month,
+        selectedDay = params.value.day.takeIf { it > 0 },
+        onSelectDay = { day -> params.onValueChange(params.value.copy(day = day)) },
+        modifier = params.modifier,
     )
 }

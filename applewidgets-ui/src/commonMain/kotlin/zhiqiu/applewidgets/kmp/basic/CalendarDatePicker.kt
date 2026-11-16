@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +29,11 @@ fun CalendarDatePicker(
     onValueChange: (DateComponents) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val impl = LocalCalendarDatePickerImpl.current
+    if (impl != null) {
+        impl(CalendarDatePickerParams(value, onValueChange, modifier))
+        return
+    }
     val firstWeekday = remember(value.year, value.month) {
         // 简化：蔡勒公式变体，返回 0=周日
         val y = if (value.month < 3) value.year - 1 else value.year
@@ -123,3 +130,14 @@ fun CalendarDatePicker(
         }
     }
 }
+
+/** 日历选择实现覆盖参数。 */
+@Immutable
+data class CalendarDatePickerParams(
+    val value: DateComponents,
+    val onValueChange: (DateComponents) -> Unit,
+    val modifier: Modifier,
+)
+
+/** 主题可替换的日历选择实现；null 表示使用组件库默认实现。 */
+val LocalCalendarDatePickerImpl = compositionLocalOf<(@Composable (CalendarDatePickerParams) -> Unit)?> { null }

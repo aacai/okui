@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,6 +53,27 @@ fun TextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
+    val impl = LocalTextFieldImpl.current
+    if (impl != null) {
+        impl(
+            TextFieldParams(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = modifier,
+                enabled = enabled,
+                readOnly = readOnly,
+                placeholder = placeholder,
+                singleLine = singleLine,
+                style = style,
+                showClear = showClear,
+                textStyle = textStyle,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                visualTransformation = visualTransformation,
+            ),
+        )
+        return
+    }
     val colors = AppleWidgetsTheme.colorScheme
     val mergedStyle = textStyle.copy(color = if (enabled) colors.label else colors.tertiaryLabel)
     val containerModifier = when (style) {
@@ -127,3 +150,24 @@ internal fun ClearButton(
 object TextFieldDefaults {
     val ContentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
 }
+
+/** 输入框实现覆盖参数。 */
+@Immutable
+data class TextFieldParams(
+    val value: String,
+    val onValueChange: (String) -> Unit,
+    val modifier: Modifier,
+    val enabled: Boolean,
+    val readOnly: Boolean,
+    val placeholder: String?,
+    val singleLine: Boolean,
+    val style: TextFieldStyle,
+    val showClear: Boolean,
+    val textStyle: TextStyle,
+    val keyboardOptions: KeyboardOptions,
+    val keyboardActions: KeyboardActions,
+    val visualTransformation: VisualTransformation,
+)
+
+/** 主题可替换的输入框实现；null 表示使用组件库默认实现。 */
+val LocalTextFieldImpl = compositionLocalOf<(@Composable (TextFieldParams) -> Unit)?> { null }

@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -34,6 +35,11 @@ fun Switch(
     enabled: Boolean = true,
     colors: SwitchColors = SwitchDefaults.switchColors(),
 ) {
+    val impl = LocalSwitchImpl.current
+    if (impl != null) {
+        impl(SwitchParams(checked, onCheckedChange, modifier, enabled, colors))
+        return
+    }
     val currentOnCheckedChange by rememberUpdatedState(onCheckedChange)
     val haptic = LocalHapticFeedback.current
     val trackColor by animateColorAsState(
@@ -132,3 +138,16 @@ data class SwitchColors(
         else -> uncheckedThumbColor
     }
 }
+
+/** 开关实现覆盖参数。 */
+@Immutable
+data class SwitchParams(
+    val checked: Boolean,
+    val onCheckedChange: ((Boolean) -> Unit)?,
+    val modifier: Modifier,
+    val enabled: Boolean,
+    val colors: SwitchColors,
+)
+
+/** 主题可替换的开关实现；null 表示使用组件库默认实现。 */
+val LocalSwitchImpl = compositionLocalOf<(@Composable (SwitchParams) -> Unit)?> { null }

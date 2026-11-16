@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -47,6 +48,22 @@ fun SearchBar(
     onCancel: (() -> Unit)? = null,
     insideMargin: PaddingValues = SearchBarDefaults.InsideMargin,
 ) {
+    val impl = LocalSearchBarImpl.current
+    if (impl != null) {
+        impl(
+            SearchBarParams(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = modifier,
+                placeholder = placeholder,
+                enabled = enabled,
+                showClear = showClear,
+                cancelLabel = cancelLabel,
+                onCancel = onCancel,
+            ),
+        )
+        return
+    }
     val styles = AppleWidgetsTheme.componentStyles
     val focusManager = LocalFocusManager.current
     var focused by remember { mutableStateOf(false) }
@@ -118,3 +135,19 @@ data class SearchBarColors(
     val contentColor: Color,
     val placeholderColor: Color,
 )
+
+/** 搜索栏实现覆盖参数。 */
+@Immutable
+data class SearchBarParams(
+    val value: String,
+    val onValueChange: (String) -> Unit,
+    val modifier: Modifier,
+    val placeholder: String,
+    val enabled: Boolean,
+    val showClear: Boolean,
+    val cancelLabel: String?,
+    val onCancel: (() -> Unit)?,
+)
+
+/** 主题可替换的搜索栏实现；null 表示使用组件库默认实现。 */
+val LocalSearchBarImpl = compositionLocalOf<(@Composable (SearchBarParams) -> Unit)?> { null }

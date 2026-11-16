@@ -1,5 +1,6 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,11 @@ fun RadioButton(
     enabled: Boolean = true,
     colors: RadioButtonColors = RadioButtonDefaults.colors(),
 ) {
+    val impl = LocalRadioButtonImpl.current
+    if (impl != null) {
+        impl(RadioButtonParams(selected, onClick, modifier, enabled, colors))
+        return
+    }
     val border by animateColorAsState(
         if (selected) colors.selectedColor(enabled) else colors.unselectedBorderColor(enabled),
     )
@@ -95,3 +101,16 @@ data class RadioButtonColors(
     fun unselectedBorderColor(enabled: Boolean): Color =
         if (enabled) unselectedBorderColor else disabledUnselectedBorderColor
 }
+
+/** 单选钮实现覆盖参数。 */
+@Immutable
+data class RadioButtonParams(
+    val selected: Boolean,
+    val onClick: (() -> Unit)?,
+    val modifier: Modifier,
+    val enabled: Boolean,
+    val colors: RadioButtonColors,
+)
+
+/** 主题可替换的单选钮实现；null 表示使用组件库默认实现。 */
+val LocalRadioButtonImpl = compositionLocalOf<(@Composable (RadioButtonParams) -> Unit)?> { null }

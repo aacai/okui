@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +25,11 @@ fun Checkbox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
+    val impl = LocalCheckboxImpl.current
+    if (impl != null) {
+        impl(CheckboxParams(checked, onCheckedChange, modifier, enabled))
+        return
+    }
     val colors = AppleWidgetsTheme.colorScheme
     val fill by animateColorAsState(
         when {
@@ -62,3 +69,15 @@ fun Checkbox(
         }
     }
 }
+
+/** 复选框实现覆盖参数。 */
+@Immutable
+data class CheckboxParams(
+    val checked: Boolean,
+    val onCheckedChange: ((Boolean) -> Unit)?,
+    val modifier: Modifier,
+    val enabled: Boolean,
+)
+
+/** 主题可替换的复选框实现；null 表示使用组件库默认实现。 */
+val LocalCheckboxImpl = compositionLocalOf<(@Composable (CheckboxParams) -> Unit)?> { null }

@@ -1,5 +1,7 @@
 package zhiqiu.applewidgets.kmp.basic
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,11 @@ fun Slider(
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     enabled: Boolean = true,
 ) {
+    val impl = LocalSliderImpl.current
+    if (impl != null) {
+        impl(SliderParams(value, onValueChange, modifier, valueRange, enabled))
+        return
+    }
     val colors = AppleWidgetsTheme.colorScheme
     val fraction = ((value - valueRange.start) / (valueRange.endInclusive - valueRange.start)).coerceIn(0f, 1f)
     val density = LocalDensity.current
@@ -85,3 +92,16 @@ fun Slider(
         )
     }
 }
+
+/** 滑块实现覆盖参数。 */
+@Immutable
+data class SliderParams(
+    val value: Float,
+    val onValueChange: (Float) -> Unit,
+    val modifier: Modifier,
+    val valueRange: ClosedFloatingPointRange<Float>,
+    val enabled: Boolean,
+)
+
+/** 主题可替换的滑块实现；null 表示使用组件库默认实现。 */
+val LocalSliderImpl = compositionLocalOf<(@Composable (SliderParams) -> Unit)?> { null }

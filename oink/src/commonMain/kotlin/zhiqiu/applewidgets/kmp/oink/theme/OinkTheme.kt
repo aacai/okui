@@ -188,8 +188,9 @@ fun OinkTheme(
             colors = oinkAppleColors(animated),
             textStyles = oinkAppleTextStyles(textStyles),
             styles = OinkComponentStyles,
-            content = content,
-        )
+        ) {
+            ProvideOinkComponents { content() }
+        }
     }
 }
 

@@ -44,6 +44,7 @@ import zhiqiu.app.component.macOsSection
 import zhiqiu.app.component.numberPickerSection
 import zhiqiu.app.component.oinkSection
 import zhiqiu.app.component.otherSection
+import zhiqiu.app.component.pickerViewSection
 import zhiqiu.app.component.progressIndicatorSection
 import zhiqiu.app.component.radioButtonSection
 import zhiqiu.app.component.searchBarSection
@@ -151,6 +152,7 @@ fun App(
                     snackbarSection(onShowToast = { toastMessage = it })
                     textFieldSection()
                     progressIndicatorSection()
+                    pickerViewSection()
                     sliderSection()
                     cardSection()
                     tooltipSection()

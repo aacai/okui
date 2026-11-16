@@ -114,7 +114,7 @@ fun OinkTextField(
                     .then(if (singleLine) Modifier.height(OinkTextFieldDefaults.MinHeight) else Modifier)
                     .clip(shape)
                     .background(container)
-                    .border(3.dp, colors.ring.copy(alpha = ringAlpha), shape)
+                    .border(2.dp, colors.ring.copy(alpha = ringAlpha), shape)
                     .border(OinkMetrics.Hairline, borderColor, shape)
                     .padding(horizontal = 14.dp)
                     .padding(vertical = if (singleLine) 0.dp else 10.dp),

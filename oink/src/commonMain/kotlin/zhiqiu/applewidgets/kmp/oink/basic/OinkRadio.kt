@@ -137,7 +137,7 @@ fun OinkRadioLabel(
 }
 
 object OinkRadioDefaults {
-    val Size = 22.dp
+    val Size = 26.dp
     val DotSize = 8.dp
 
     @Composable

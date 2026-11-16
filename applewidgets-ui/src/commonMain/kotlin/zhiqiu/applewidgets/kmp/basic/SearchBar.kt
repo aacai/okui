@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -18,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import zhiqiu.applewidgets.kmp.theme.AppleWidgetsTheme
 
@@ -30,9 +29,11 @@ fun SearchBar(
     placeholder: String = "搜索",
     enabled: Boolean = true,
     colors: SearchBarColors = SearchBarDefaults.colors(),
-    cornerRadius: Dp = SearchBarDefaults.CornerRadius,
+    shape: Shape? = null,
+    showClear: Boolean = true,
     insideMargin: PaddingValues = SearchBarDefaults.InsideMargin,
 ) {
+    val styles = AppleWidgetsTheme.componentStyles
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -42,8 +43,8 @@ fun SearchBar(
         cursorBrush = SolidColor(AppleWidgetsTheme.colorScheme.accent),
         modifier = modifier
             .fillMaxWidth()
-            .height(SearchBarDefaults.Height)
-            .clip(RoundedCornerShape(cornerRadius))
+            .height(styles.controlMinHeight)
+            .clip(shape ?: styles.controlShape)
             .background(colors.containerColor)
             .padding(insideMargin),
         decorationBox = { inner ->
@@ -56,14 +57,15 @@ fun SearchBar(
                     }
                     inner()
                 }
+                if (showClear && value.isNotEmpty()) {
+                    ClearButton(onClick = { onValueChange("") }, tint = colors.placeholderColor)
+                }
             }
         },
     )
 }
 
 object SearchBarDefaults {
-    val Height = 36.dp
-    val CornerRadius = 10.dp
     val InsideMargin = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
 
     @Composable

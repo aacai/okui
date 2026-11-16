@@ -47,7 +47,7 @@ fun Sheet(
             modifier = modifier
                 .fillMaxWidth()
                 .fillMaxHeight(heightFraction)
-                .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                .clip(AppleWidgetsTheme.componentStyles.sheetShape)
                 .background(colors.secondarySystemGroupedBackground)
                 .clickable(enabled = false, onClick = {})
                 .safeNavigationBarsPadding()

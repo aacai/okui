@@ -36,11 +36,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,9 +60,11 @@ fun OinkShowcase(
     initialDark: Boolean = false,
     initialAccent: OinkAccent = OinkAccent.Pink,
 ) {
-    var dark by remember { mutableStateOf(initialDark) }
-    var accent by remember { mutableStateOf(initialAccent) }
-    OinkTheme(darkTheme = dark, accent = accent) {
+    val controller = rememberOinkThemeController(
+        colorSchemeMode = if (initialDark) OinkColorSchemeMode.Dark else OinkColorSchemeMode.Light,
+        accent = initialAccent,
+    )
+    OinkTheme(controller) {
         val c = OinkTheme.colors
         val listState = rememberLazyListState()
         val scope = rememberCoroutineScope()
@@ -76,10 +74,7 @@ fun OinkShowcase(
             val wide = maxWidth >= 920.dp
             Column(Modifier.fillMaxSize()) {
                 TopBar(
-                    dark = dark,
-                    onToggleDark = { dark = !dark },
-                    accent = accent,
-                    onAccent = { accent = it },
+                    controller = controller,
                     onBack = onBack,
                 )
                 Row(Modifier.fillMaxSize()) {
@@ -130,13 +125,11 @@ fun OinkShowcase(
 
 @Composable
 private fun TopBar(
-    dark: Boolean,
-    onToggleDark: () -> Unit,
-    accent: OinkAccent,
-    onAccent: (OinkAccent) -> Unit,
+    controller: OinkThemeController,
     onBack: (() -> Unit)?,
 ) {
     val c = OinkTheme.colors
+    val dark = controller.colorSchemeMode == OinkColorSchemeMode.Dark
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,14 +153,14 @@ private fun TopBar(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             OinkAccent.entries.forEach { a ->
                 val swatch = oinkLightColors(a).accent
-                val selected = a == accent
+                val selected = a == controller.accent
                 Box(
                     modifier = Modifier
                         .size(if (selected) 24.dp else 20.dp)
                         .clip(CircleShape)
                         .background(swatch)
                         .border(if (selected) 2.dp else 0.dp, if (selected) c.text else Color.Transparent, CircleShape)
-                        .clickable { onAccent(a) },
+                        .clickable { controller.accent = a },
                 )
             }
         }
@@ -175,7 +168,10 @@ private fun TopBar(
         OinkTooltip(tooltip = if (dark) "Light mode" else "Dark mode") {
             OinkIconButton(
                 icon = if (dark) OinkIcons.Sun else OinkIcons.Moon,
-                onClick = onToggleDark,
+                onClick = {
+                    controller.colorSchemeMode =
+                        if (controller.colorSchemeMode == OinkColorSchemeMode.Dark) OinkColorSchemeMode.Light else OinkColorSchemeMode.Dark
+                },
                 contentDescription = "Toggle theme",
                 variant = OinkButtonVariant.Soft,
                 size = OinkButtonSize.Sm,

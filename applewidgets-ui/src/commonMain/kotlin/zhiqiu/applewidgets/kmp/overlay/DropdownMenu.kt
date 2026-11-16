@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +47,7 @@ fun DropdownMenuPanel(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = AppleWidgetsTheme.colorScheme
-    val shape = RoundedCornerShape(14.dp)
+    val shape = AppleWidgetsTheme.componentStyles.overlayShape
     Column(
         modifier = modifier
             .widthIn(min = 200.dp, max = 320.dp)

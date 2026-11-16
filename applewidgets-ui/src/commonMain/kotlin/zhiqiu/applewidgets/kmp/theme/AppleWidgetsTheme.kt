@@ -24,17 +24,19 @@ val LocalContentColor = compositionLocalOf { Color.Black }
 fun AppleWidgetsTheme(
     controller: ThemeController,
     textStyles: TextStyles = defaultTextStyles(),
+    styles: ComponentStyles = ComponentStyles(),
     content: @Composable () -> Unit,
 ) {
     val rawColors = controller.currentColors()
     val colors = remember { rawColors.copy() }.apply { updateColorsFrom(rawColors) }
-    val styles = remember { textStyles.copy() }.apply { updateTextStylesFrom(textStyles) }
+    val resolvedTextStyles = remember { textStyles.copy() }.apply { updateTextStylesFrom(textStyles) }
     val indication = remember(colors.label) { ApplePressIndication(colors.label) }
     CompositionLocalProvider(
         LocalColors provides colors,
-        LocalTextStyles provides styles,
+        LocalTextStyles provides resolvedTextStyles,
         LocalContentColor provides colors.label,
         LocalColorSchemeMode provides controller.colorSchemeMode,
+        LocalComponentStyles provides styles,
         LocalIndication provides indication,
     ) {
         content()
@@ -45,15 +47,17 @@ fun AppleWidgetsTheme(
 fun AppleWidgetsTheme(
     colors: Colors = AppleWidgetsTheme.colorScheme,
     textStyles: TextStyles = AppleWidgetsTheme.textStyles,
+    styles: ComponentStyles = ComponentStyles(),
     content: @Composable () -> Unit,
 ) {
     val resolvedColors = remember { colors.copy() }.apply { updateColorsFrom(colors) }
-    val styles = remember { textStyles.copy() }.apply { updateTextStylesFrom(textStyles) }
+    val resolvedTextStyles = remember { textStyles.copy() }.apply { updateTextStylesFrom(textStyles) }
     val indication = remember(resolvedColors.label) { ApplePressIndication(resolvedColors.label) }
     CompositionLocalProvider(
         LocalColors provides resolvedColors,
-        LocalTextStyles provides styles,
+        LocalTextStyles provides resolvedTextStyles,
         LocalContentColor provides resolvedColors.label,
+        LocalComponentStyles provides styles,
         LocalIndication provides indication,
     ) {
         content()
@@ -68,6 +72,10 @@ object AppleWidgetsTheme {
     val textStyles: TextStyles
         @Composable @ReadOnlyComposable
         get() = LocalTextStyles.current
+
+    val componentStyles: ComponentStyles
+        @Composable @ReadOnlyComposable
+        get() = LocalComponentStyles.current
 
     val colorSchemeMode: ColorSchemeMode?
         @Composable @ReadOnlyComposable

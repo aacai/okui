@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -32,7 +31,7 @@ fun TextEditor(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = minHeight)
-            .clip(RoundedCornerShape(TextEditorDefaults.CornerRadius))
+            .clip(AppleWidgetsTheme.componentStyles.controlShape)
             .background(colors.containerColor)
             .padding(TextEditorDefaults.ContentPadding),
     ) {

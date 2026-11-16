@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -27,12 +26,13 @@ fun Chip(
     enabled: Boolean = true,
     colors: ChipColors = ChipDefaults.colors(selected),
 ) {
-    val shape = RoundedCornerShape(ChipDefaults.CornerRadius)
+    val styles = AppleWidgetsTheme.componentStyles
+    val shape = styles.chipShape
     val container = if (enabled) colors.containerColor else colors.disabledContainerColor
     val content = if (enabled) colors.contentColor else colors.disabledContentColor
     Row(
         modifier = modifier
-            .defaultMinSize(minHeight = ChipDefaults.MinHeight)
+            .defaultMinSize(minHeight = styles.chipMinHeight)
             .clip(shape)
             .background(container)
             .then(
@@ -49,8 +49,6 @@ fun Chip(
 }
 
 object ChipDefaults {
-    val MinHeight = 32.dp
-    val CornerRadius = 16.dp
     val InsideMargin = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
 
     @Composable

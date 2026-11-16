@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import zhiqiu.applewidgets.kmp.theme.AppleWidgetsTheme
 
 @Immutable
 data class OinkTextStyles(
@@ -75,6 +76,7 @@ fun oinkTextStyles(): OinkTextStyles {
 val LocalOinkTextStyles = staticCompositionLocalOf { oinkTextStyles() }
 
 object OinkTheme {
+    /** Oink 色板。必须包裹 [OinkTheme] 使用，否则取静态浅色默认（不跟随明暗 / 强调色）。 */
     val colors: OinkColors
         @Composable @ReadOnlyComposable
         get() = LocalOinkColors.current
@@ -86,6 +88,22 @@ object OinkTheme {
     val isDark: Boolean
         @Composable @ReadOnlyComposable
         get() = colors.isDark
+}
+
+/**
+ * Oink 主题（控制器模式，对齐 miuix）：由 [controller] 决定当前配色，
+ * 修改 [OinkThemeController.colorSchemeMode]/[OinkThemeController.accent] 即全局换肤。
+ */
+@Composable
+fun OinkTheme(
+    controller: OinkThemeController,
+    textStyles: OinkTextStyles = oinkTextStyles(),
+    content: @Composable () -> Unit,
+) {
+    val colors = controller.currentColors()
+    CompositionLocalProvider(LocalOinkThemeController provides controller) {
+        OinkTheme(colors = colors, textStyles = textStyles, content = content)
+    }
 }
 
 /**
@@ -164,6 +182,18 @@ fun OinkTheme(
         LocalOinkTextStyles provides textStyles,
         LocalOinkContentColor provides animated.text,
     ) {
-        content()
+        // 唯一主题入口：Oink 只是皮肤，向 AppleWidgetsTheme 注入派生令牌，
+        // applewidgets-ui 的组件因此自动呈现 Oink 配色与形状。
+        AppleWidgetsTheme(
+            colors = oinkAppleColors(animated),
+            textStyles = oinkAppleTextStyles(textStyles),
+            styles = OinkComponentStyles,
+            content = content,
+        )
     }
 }
+
+/** 读取当前控制器；未用控制器模式包主题时为 null。 */
+val OinkTheme.controller: OinkThemeController?
+    @Composable @ReadOnlyComposable
+    get() = LocalOinkThemeController.current

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.Immutable
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -30,6 +31,7 @@ import kotlin.math.sqrt
  * 内部乘 [RadiusScale]（--ok-rk = 1.45）外扩曲线起点，视觉圆角与标称一致。
  * 全圆（胶囊、圆）请直接用 CircleShape / RoundedCornerShape(percent = 50)。
  */
+@Immutable
 data class OinkShape(
     val topStart: Dp,
     val topEnd: Dp,

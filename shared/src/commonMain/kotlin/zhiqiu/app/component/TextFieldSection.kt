@@ -29,7 +29,7 @@ fun LazyListScope.textFieldSection() {
                 .padding(bottom = 12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            TextField(value = text1, onValueChange = { text1 = it }, placeholder = "Search")
+            TextField(value = text1, onValueChange = { text1 = it }, placeholder = "Search", showClear = true)
             TextField(value = text2, onValueChange = { text2 = it }, placeholder = "With placeholder")
             SecureField(value = password, onValueChange = { password = it }, placeholder = "Password")
             TextEditor(value = notes, onValueChange = { notes = it }, placeholder = "多行文本")

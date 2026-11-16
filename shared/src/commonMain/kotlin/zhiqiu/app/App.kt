@@ -88,14 +88,11 @@ fun AppThemeState.currentDark(): Boolean = when (controller.colorSchemeMode) {
 @Composable
 fun AppTheme(state: AppThemeState, content: @Composable () -> Unit) {
     when (state.style) {
-        AppThemeStyle.Oink -> OinkTheme(darkTheme = state.currentDark(), accent = state.accent) {
-            AppleWidgetsTheme(
-                colors = oinkAppleColors(OinkTheme.colors),
-                textStyles = oinkAppleTextStyles(OinkTheme.textStyles),
-            ) {
-                content()
-            }
-        }
+        AppThemeStyle.Oink -> OinkTheme(
+            darkTheme = state.currentDark(),
+            accent = state.accent,
+            content = content,
+        )
         AppThemeStyle.Apple -> AppleWidgetsTheme(controller = state.controller) {
             content()
         }

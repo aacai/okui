@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,8 +33,8 @@ fun ListPopup(
         Column(
             modifier = modifier
                 .widthIn(min = 220.dp, max = 300.dp)
-                .shadow(12.dp, RoundedCornerShape(14.dp))
-                .clip(RoundedCornerShape(14.dp))
+                .shadow(12.dp, AppleWidgetsTheme.componentStyles.overlayShape)
+                .clip(AppleWidgetsTheme.componentStyles.overlayShape)
                 .background(colors.secondarySystemGroupedBackground)
                 .padding(vertical = 6.dp),
         ) {

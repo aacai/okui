@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import zhiqiu.applewidgets.kmp.basic.Button
+import zhiqiu.applewidgets.kmp.basic.ButtonState
 import zhiqiu.applewidgets.kmp.basic.ButtonStyle
 import zhiqiu.applewidgets.kmp.basic.SmallTitle
 
@@ -23,6 +24,7 @@ fun LazyListScope.buttonSection() {
         var submitText by remember { mutableStateOf("Submit") }
         var cancelCount by remember { mutableIntStateOf(0) }
         var submitCount by remember { mutableIntStateOf(0) }
+        var state by remember { mutableStateOf(ButtonState.Idle) }
 
         SmallTitle(text = "Button")
         Row(
@@ -91,6 +93,55 @@ fun LazyListScope.buttonSection() {
                 onClick = {},
                 modifier = Modifier.weight(1f),
                 style = ButtonStyle.Destructive,
+            )
+        }
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Button(
+                text = "Neutral",
+                onClick = {},
+                modifier = Modifier.weight(1f),
+                style = ButtonStyle.Neutral,
+            )
+            Spacer(Modifier.width(12.dp))
+            Button(
+                text = "Inverted",
+                onClick = {},
+                modifier = Modifier.weight(1f),
+                style = ButtonStyle.Inverted,
+            )
+        }
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Button(
+                text = state.name,
+                onClick = {
+                    state = when (state) {
+                        ButtonState.Idle -> ButtonState.Loading
+                        ButtonState.Loading -> ButtonState.Success
+                        ButtonState.Success -> ButtonState.Error
+                        ButtonState.Error -> ButtonState.Idle
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                style = ButtonStyle.Filled,
+                state = state,
+            )
+            Spacer(Modifier.width(12.dp))
+            Button(
+                text = "Loading",
+                onClick = {},
+                modifier = Modifier.weight(1f),
+                style = ButtonStyle.Neutral,
+                state = ButtonState.Loading,
             )
         }
     }

@@ -48,6 +48,8 @@ fun OinkVerticalScrollbar(
     state: LazyListState,
     modifier: Modifier = Modifier,
     colors: OinkScrollbarColors = OinkScrollbarDefaults.colors(),
+    /** reverseLayout 下 index 0 在列表底部，位置与拖动方向都要反过来 */
+    reverseLayout: Boolean = false,
 ) {
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
@@ -69,19 +71,20 @@ fun OinkVerticalScrollbar(
             .fillMaxHeight()
             .width(OinkScrollbarDefaults.TrackWidth)
             .hoverable(interaction)
-            .pointerInput(contentHeight, viewport) {
+            .pointerInput(contentHeight, viewport, reverseLayout) {
                 detectVerticalDragGestures { change, dy ->
                     change.consume()
                     val trackPx = size.height.toFloat()
                     val delta = dy * contentHeight / trackPx
-                    scope.launch { state.scrollBy(delta) }
+                    scope.launch { state.scrollBy(if (reverseLayout) -delta else delta) }
                 }
             },
     ) {
         val trackH = constraints.maxHeight.toFloat()
         val thumbH = (viewport / contentHeight * trackH).coerceAtLeast(with(density) { OinkScrollbarDefaults.MinThumbHeight.toPx() })
         val maxOffset = (trackH - thumbH).coerceAtLeast(0f)
-        val thumbY = (scrolled / (contentHeight - viewport) * maxOffset).coerceIn(0f, maxOffset)
+        val rawProgress = (scrolled / (contentHeight - viewport)).coerceIn(0f, 1f)
+        val thumbY = (if (reverseLayout) 1f - rawProgress else rawProgress) * maxOffset
         val thumbWidth = if (hovered) OinkScrollbarDefaults.ThumbWidthHover else OinkScrollbarDefaults.ThumbWidth
         Box(
             Modifier

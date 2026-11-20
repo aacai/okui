@@ -3,12 +3,10 @@ package zhiqiu.applewidgets.kmp.overlay
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.Immutable
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import zhiqiu.applewidgets.kmp.liquid.LiquidGlassScrim
 import zhiqiu.applewidgets.kmp.platform.safeNavigationBarsPadding
 import zhiqiu.applewidgets.kmp.theme.AppleWidgetsTheme
 
@@ -43,11 +42,9 @@ fun Sheet(
         SheetDetent.Medium -> 0.5f
         SheetDetent.Large -> 0.92f
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.windowDimming)
-            .clickable(onClick = onDismissRequest),
+    LiquidGlassScrim(
+        color = colors.windowDimming,
+        onClick = onDismissRequest,
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(
@@ -56,7 +53,6 @@ fun Sheet(
                 .fillMaxHeight(heightFraction)
                 .clip(AppleWidgetsTheme.componentStyles.sheetShape)
                 .background(colors.secondarySystemGroupedBackground)
-                .clickable(enabled = false, onClick = {})
                 .safeNavigationBarsPadding()
                 .padding(bottom = 8.dp),
         ) {

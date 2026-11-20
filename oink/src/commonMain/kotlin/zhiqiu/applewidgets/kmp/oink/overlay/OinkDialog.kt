@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import zhiqiu.applewidgets.kmp.liquid.LiquidGlassScrim
 import zhiqiu.applewidgets.kmp.overlay.PlatformDialogOverlay
 
 /**
@@ -57,11 +57,9 @@ fun OinkDialog(
     val enter = remember { Animatable(0f) }
     LaunchedEffect(Unit) { enter.animateTo(1f, OinkMotion.spring()) }
     PlatformDialogOverlay(onDismissRequest = onDismissRequest) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colors.scrim)
-                .clickable(onClick = onDismissRequest),
+        LiquidGlassScrim(
+            color = colors.scrim,
+            onClick = onDismissRequest,
             contentAlignment = Alignment.Center,
         ) {
             val shape = OinkShape(OinkRadii.r5)

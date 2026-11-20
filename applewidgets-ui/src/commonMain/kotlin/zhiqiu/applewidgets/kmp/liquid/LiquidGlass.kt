@@ -2,11 +2,14 @@ package zhiqiu.applewidgets.kmp.liquid
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -14,6 +17,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.drawBackdrop
@@ -60,6 +65,42 @@ fun LiquidGlass(
             )
         } else {
             FallbackLiquidGlass(modifier = modifier, style = style, shape = shape, content = content)
+        }
+    }
+}
+
+/**
+ * 弹窗背景遮罩：在 Scaffold 提供 backdrop 时真实模糊背后内容，否则退化为普通半透明遮罩。
+ */
+@Composable
+fun LiquidGlassScrim(
+    color: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    blurRadius: Dp = 16.dp,
+    contentAlignment: Alignment = Alignment.Center,
+    content: @Composable () -> Unit,
+) {
+    val backdrop = LocalLiquidBackdrop.current
+    val scrimModifier = if (backdrop != null && isRuntimeShaderSupported()) {
+        modifier
+            .fillMaxSize()
+            .clickable(onClick = onClick)
+            .drawBackdrop(
+                backdrop = backdrop,
+                shape = { RectangleShape },
+                effects = { blur(blurRadius.toPx()) },
+                onDrawSurface = { drawRect(color) },
+            )
+    } else {
+        modifier
+            .fillMaxSize()
+            .background(color)
+            .clickable(onClick = onClick)
+    }
+    Box(scrimModifier, contentAlignment = contentAlignment) {
+        Box(Modifier.clickable(enabled = false, onClick = {})) {
+            content()
         }
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import zhiqiu.applewidgets.kmp.basic.Separator
 import zhiqiu.applewidgets.kmp.basic.Text
+import zhiqiu.applewidgets.kmp.liquid.LiquidGlassScrim
 import zhiqiu.applewidgets.kmp.platform.safeNavigationBarsPadding
 import zhiqiu.applewidgets.kmp.theme.AppleWidgetsTheme
 
@@ -36,11 +36,9 @@ fun ActionSheet(
     modifier: Modifier = Modifier,
 ) {
     val colors = AppleWidgetsTheme.colorScheme
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.windowDimming)
-            .clickable(onClick = onDismissRequest),
+    LiquidGlassScrim(
+        color = colors.windowDimming,
+        onClick = onDismissRequest,
         contentAlignment = Alignment.BottomCenter,
     ) {
         Column(

@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import zhiqiu.applewidgets.kmp.liquid.LocalLiquidBackdrop
+import zhiqiu.applewidgets.kmp.liquid.liquidBackdropSource
+import zhiqiu.applewidgets.kmp.liquid.rememberLiquidBackdrop
 import zhiqiu.applewidgets.kmp.theme.AppleWidgetsTheme
 
 @Composable
@@ -19,16 +23,20 @@ fun Scaffold(
     bottomBar: @Composable (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AppleWidgetsTheme.colorScheme.systemGroupedBackground),
-    ) {
-        topBar?.invoke()
-        Box(modifier = Modifier.weight(1f).fillMaxSize()) {
-            content(PaddingValues(0.dp))
+    val liquidBackdrop = rememberLiquidBackdrop()
+    CompositionLocalProvider(LocalLiquidBackdrop provides liquidBackdrop) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(AppleWidgetsTheme.colorScheme.systemGroupedBackground)
+                .liquidBackdropSource(liquidBackdrop),
+        ) {
+            topBar?.invoke()
+            Box(modifier = Modifier.weight(1f).fillMaxSize()) {
+                content(PaddingValues(0.dp))
+            }
+            bottomBar?.invoke()
         }
-        bottomBar?.invoke()
     }
 }
 

@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import zhiqiu.applewidgets.kmp.basic.Separator
 import zhiqiu.applewidgets.kmp.basic.Text
+import zhiqiu.applewidgets.kmp.liquid.LiquidGlassScrim
 import zhiqiu.applewidgets.kmp.theme.AppleWidgetsTheme
 
 data class AlertAction(
@@ -46,19 +46,16 @@ fun Alert(
         return
     }
     val colors = AppleWidgetsTheme.colorScheme
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colors.windowDimming)
-            .clickable(onClick = onDismissRequest),
+    LiquidGlassScrim(
+        color = colors.windowDimming,
+        onClick = onDismissRequest,
         contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = modifier
                 .widthIn(max = 270.dp)
                 .clip(AppleWidgetsTheme.componentStyles.overlayShape)
-                .background(colors.secondarySystemGroupedBackground)
-                .clickable(enabled = false, onClick = {}),
+                .background(colors.secondarySystemGroupedBackground),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(

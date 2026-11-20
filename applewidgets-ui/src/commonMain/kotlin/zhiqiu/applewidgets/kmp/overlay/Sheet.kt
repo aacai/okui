@@ -42,35 +42,37 @@ fun Sheet(
         SheetDetent.Medium -> 0.5f
         SheetDetent.Large -> 0.92f
     }
-    LiquidGlassScrim(
-        color = colors.windowDimming,
-        onClick = onDismissRequest,
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight(heightFraction)
-                .clip(AppleWidgetsTheme.componentStyles.sheetShape)
-                .background(colors.secondarySystemGroupedBackground)
-                .safeNavigationBarsPadding()
-                .padding(bottom = 8.dp),
+    PlatformDialogOverlay(onDismissRequest = onDismissRequest) {
+        LiquidGlassScrim(
+            color = colors.windowDimming,
+            onClick = onDismissRequest,
+            contentAlignment = Alignment.BottomCenter,
         ) {
-            Box(
-                modifier = Modifier
+            Column(
+                modifier = modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                contentAlignment = Alignment.Center,
+                    .fillMaxHeight(heightFraction)
+                    .clip(AppleWidgetsTheme.componentStyles.sheetShape)
+                    .background(colors.secondarySystemGroupedBackground)
+                    .safeNavigationBarsPadding()
+                    .padding(bottom = 8.dp),
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.12f)
-                        .height(5.dp)
-                        .clip(RoundedCornerShape(2.5.dp))
-                        .background(colors.tertiaryFill),
-                )
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.12f)
+                            .height(5.dp)
+                            .clip(RoundedCornerShape(2.5.dp))
+                            .background(colors.tertiaryFill),
+                    )
+                }
+                content()
             }
-            content()
         }
     }
 }

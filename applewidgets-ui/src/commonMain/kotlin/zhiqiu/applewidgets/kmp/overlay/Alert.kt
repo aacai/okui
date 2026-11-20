@@ -46,64 +46,66 @@ fun Alert(
         return
     }
     val colors = AppleWidgetsTheme.colorScheme
-    LiquidGlassScrim(
-        color = colors.windowDimming,
-        onClick = onDismissRequest,
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            modifier = modifier
-                .widthIn(max = 270.dp)
-                .clip(AppleWidgetsTheme.componentStyles.overlayShape)
-                .background(colors.secondarySystemGroupedBackground),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    PlatformDialogOverlay(onDismissRequest = onDismissRequest) {
+        LiquidGlassScrim(
+            color = colors.windowDimming,
+            onClick = onDismissRequest,
+            contentAlignment = Alignment.Center,
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
+                modifier = modifier
+                    .widthIn(max = 270.dp)
+                    .clip(AppleWidgetsTheme.componentStyles.overlayShape)
+                    .background(colors.secondarySystemGroupedBackground),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = title,
-                    style = AppleWidgetsTheme.textStyles.headline,
-                    color = colors.label,
-                    textAlign = TextAlign.Center,
-                )
-                if (message != null) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
                     Text(
-                        text = message,
-                        style = AppleWidgetsTheme.textStyles.footnote,
+                        text = title,
+                        style = AppleWidgetsTheme.textStyles.headline,
                         color = colors.label,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 4.dp),
                     )
+                    if (message != null) {
+                        Text(
+                            text = message,
+                            style = AppleWidgetsTheme.textStyles.footnote,
+                            color = colors.label,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
                 }
-            }
-            Separator(startIndent = 0.dp)
-            actions.forEachIndexed { index, action ->
-                val actionColor = when (action.role) {
-                    AlertActionRole.Destructive -> colors.destructive
-                    AlertActionRole.Cancel -> colors.accent
-                    AlertActionRole.Default -> colors.accent
-                }
-                val style = if (action.role == AlertActionRole.Cancel) {
-                    AppleWidgetsTheme.textStyles.headline
-                } else {
-                    AppleWidgetsTheme.textStyles.body
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            action.onClick()
-                            onDismissRequest()
-                        }
-                        .padding(vertical = 12.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = action.title, style = style, color = actionColor)
-                }
-                if (index != actions.lastIndex) {
-                    Separator(startIndent = 0.dp)
+                Separator(startIndent = 0.dp)
+                actions.forEachIndexed { index, action ->
+                    val actionColor = when (action.role) {
+                        AlertActionRole.Destructive -> colors.destructive
+                        AlertActionRole.Cancel -> colors.accent
+                        AlertActionRole.Default -> colors.accent
+                    }
+                    val style = if (action.role == AlertActionRole.Cancel) {
+                        AppleWidgetsTheme.textStyles.headline
+                    } else {
+                        AppleWidgetsTheme.textStyles.body
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                action.onClick()
+                                onDismissRequest()
+                            }
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(text = action.title, style = style, color = actionColor)
+                    }
+                    if (index != actions.lastIndex) {
+                        Separator(startIndent = 0.dp)
+                    }
                 }
             }
         }

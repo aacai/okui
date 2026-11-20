@@ -36,87 +36,89 @@ fun ActionSheet(
     modifier: Modifier = Modifier,
 ) {
     val colors = AppleWidgetsTheme.colorScheme
-    LiquidGlassScrim(
-        color = colors.windowDimming,
-        onClick = onDismissRequest,
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .safeNavigationBarsPadding()
-                .clickable(enabled = false, onClick = {}),
+    PlatformDialogOverlay(onDismissRequest = onDismissRequest) {
+        LiquidGlassScrim(
+            color = colors.windowDimming,
+            onClick = onDismissRequest,
+            contentAlignment = Alignment.BottomCenter,
         ) {
             Column(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
-                    .clip(AppleWidgetsTheme.componentStyles.overlayShape)
-                    .background(colors.secondarySystemGroupedBackground),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .padding(8.dp)
+                    .safeNavigationBarsPadding()
+                    .clickable(enabled = false, onClick = {}),
             ) {
-                if (title != null || message != null) {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        if (title != null) {
-                            Text(
-                                text = title,
-                                style = AppleWidgetsTheme.textStyles.footnote,
-                                color = colors.secondaryLabel,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
-                        if (message != null) {
-                            Text(
-                                text = message,
-                                style = AppleWidgetsTheme.textStyles.footnote,
-                                color = colors.secondaryLabel,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(top = 2.dp),
-                            )
-                        }
-                    }
-                    Separator(startIndent = 0.dp)
-                }
-                actions.forEachIndexed { index, item ->
-                    val color = when (item.role) {
-                        AlertActionRole.Destructive -> colors.destructive
-                        else -> colors.accent
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                item.onClick()
-                                onDismissRequest()
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(AppleWidgetsTheme.componentStyles.overlayShape)
+                        .background(colors.secondarySystemGroupedBackground),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    if (title != null || message != null) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            if (title != null) {
+                                Text(
+                                    text = title,
+                                    style = AppleWidgetsTheme.textStyles.footnote,
+                                    color = colors.secondaryLabel,
+                                    textAlign = TextAlign.Center,
+                                )
                             }
-                            .padding(vertical = 16.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(text = item.title, style = AppleWidgetsTheme.textStyles.title3, color = color)
-                    }
-                    if (index != actions.lastIndex) {
+                            if (message != null) {
+                                Text(
+                                    text = message,
+                                    style = AppleWidgetsTheme.textStyles.footnote,
+                                    color = colors.secondaryLabel,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(top = 2.dp),
+                                )
+                            }
+                        }
                         Separator(startIndent = 0.dp)
                     }
+                    actions.forEachIndexed { index, item ->
+                        val color = when (item.role) {
+                            AlertActionRole.Destructive -> colors.destructive
+                            else -> colors.accent
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    item.onClick()
+                                    onDismissRequest()
+                                }
+                                .padding(vertical = 16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(text = item.title, style = AppleWidgetsTheme.textStyles.title3, color = color)
+                        }
+                        if (index != actions.lastIndex) {
+                            Separator(startIndent = 0.dp)
+                        }
+                    }
                 }
-            }
-            Spacer(Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(AppleWidgetsTheme.componentStyles.overlayShape)
-                    .background(colors.secondarySystemGroupedBackground)
-                    .clickable(onClick = onDismissRequest)
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = cancelTitle,
-                    style = AppleWidgetsTheme.textStyles.headline,
-                    color = colors.accent,
-                )
+                Spacer(Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(AppleWidgetsTheme.componentStyles.overlayShape)
+                        .background(colors.secondarySystemGroupedBackground)
+                        .clickable(onClick = onDismissRequest)
+                        .padding(vertical = 16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = cancelTitle,
+                        style = AppleWidgetsTheme.textStyles.headline,
+                        color = colors.accent,
+                    )
+                }
             }
         }
     }

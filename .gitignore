@@ -18,6 +18,3 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
 
-# 本地工具目录
-.cursor/
-.vscode/

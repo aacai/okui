@@ -1,0 +1,134 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Desktop: Run",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":desktopApp:run"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Desktop: Hot Run (auto reload)",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":desktopApp:hotRun", "--auto"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Desktop: Run (Debug @5005)",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":desktopApp:run", "-PdebugJvm=true"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Android: Assemble Debug APK",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":androidApp:assembleDebug"],
+      "problemMatcher": ["$gradle"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Android: Assemble Release APK",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":androidApp:assembleRelease"],
+      "problemMatcher": ["$gradle"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Android: Build & Install Debug APK",
+      "type": "shell",
+      "command": "./gradlew :androidApp:assembleDebug && APK=$(find androidApp/build/outputs/apk/debug -maxdepth 1 -name '*.apk' 2>/dev/null | head -n1) && if [ -z \"$APK\" ]; then echo \"!! 未找到 APK\"; exit 1; fi && SEEN=\"\" && adb devices | awk -F'\\t' '$2==\"device\"{print $1}' | while IFS= read -r d; do st=$(adb -s \"$d\" get-state < /dev/null 2>/dev/null); if [ \"$st\" != \"device\" ]; then echo \"!! 跳过 $d (状态=$st)\"; continue; fi; aid=$(adb -s \"$d\" shell settings get secure android_id < /dev/null 2>/dev/null | tr -d '\\r'); key=${aid:-$d}; case \";$SEEN;\" in *\";$key;\"*) echo \".. 跳过 $d (重复连接)\"; continue;; esac; SEEN=\"$SEEN;$key\"; echo \"==> 安装到 $d\"; if ! OUT=$(adb -s \"$d\" install -r \"$APK\" < /dev/null 2>&1); then case \"$OUT\" in *INSTALL_FAILED_UPDATE_INCOMPATIBLE*) echo \".. 签名冲突，卸载后重装 $d\"; adb -s \"$d\" uninstall zhiqiu.app < /dev/null || true; adb -s \"$d\" install -r \"$APK\" < /dev/null || echo \"!! 重装失败 $d\";; *) echo \"$OUT\"; echo \"!! 安装失败 $d\";; esac; fi; done",
+      "problemMatcher": ["$gradle"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Build shared (JVM + Android)",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":shared:compileKotlinJvm", ":shared:compileKotlinAndroid"],
+      "problemMatcher": ["$gradle"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "MCP: Run APK Server (stdio)",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": [":mcpServer:run", "--quiet"],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "clear": false
+      }
+    },
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "./gradlew",
+      "args": ["clean"],
+      "problemMatcher": ["$gradle"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "clear": false
+      }
+    }
+  ]
+}

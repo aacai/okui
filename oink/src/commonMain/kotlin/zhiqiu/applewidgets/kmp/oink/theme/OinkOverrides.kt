@@ -122,7 +122,7 @@ internal fun OinkCheckboxImpl(params: CheckboxParams) {
 internal fun OinkRadioImpl(params: RadioButtonParams) {
     OinkRadio(
         selected = params.selected,
-        onClick = { params.onClick?.invoke() },
+        onClick = params.onClick,
         modifier = params.modifier,
         enabled = params.enabled,
     )

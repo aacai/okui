@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun OinkRadio(
     selected: Boolean,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: OinkRadioColors = OinkRadioDefaults.colors(),
@@ -81,6 +81,17 @@ fun OinkRadio(
         label = "dot",
     )
 
+    val clickable = if (onClick != null) {
+        Modifier.clickable(
+            interactionSource = source,
+            indication = null,
+            enabled = enabled,
+            role = Role.RadioButton,
+            onClick = onClick,
+        )
+    } else {
+        Modifier
+    }
     Box(
         modifier = modifier
             .graphicsLayer { scaleX = scale; scaleY = scale }
@@ -89,13 +100,7 @@ fun OinkRadio(
             .clip(CircleShape)
             .background(bg)
             .border(OinkMetrics.ControlStroke, borderColor, CircleShape)
-            .clickable(
-                interactionSource = source,
-                indication = null,
-                enabled = enabled,
-                role = Role.RadioButton,
-                onClick = onClick,
-            ),
+            .then(clickable),
         contentAlignment = Alignment.Center,
     ) {
         Box(
